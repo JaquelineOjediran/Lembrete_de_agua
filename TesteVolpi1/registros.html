@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registros</title>
+</head>
+
+<body>
+
+    <h5>Data de hoje: <span id="data"></span></h5>
+    <script>
+        fetch('./usuario.php').then(response => {
+            return response.json();
+        }).then(usuario => {
+            document.getElementById("meta_do_dia").innerText = usuario.meta_usuario;
+            fetch('./consumo-do-dia.php').then(response => {
+                return response.json();
+            }).then(dia => {
+                document.getElementById("meta_consumida").innerText = dia.consumido_dia;
+                document.getElementById("meta_restante").innerText = usuario.meta_usuario - dia.consumido_dia;
+                document.getElementById("meta_porcento").innerText = ((100 * dia.consumido_dia) / usuario.meta_usuario).toFixed(2);
+                document.getElementById("meta_concluida").innerText = Number(dia.consumido_dia) >= Number(usuario.meta_usuario) ? "SIM" : "NÃO";
+
+                console.log(dia.consumido_dia);
+                console.log(usuario.meta_usuario);
+                console.log(dia.consumido_dia >= usuario.meta_usuario);
+            });
+        });
+
+        date = new Date();
+        year = date.getFullYear();
+        month = date.getMonth() + 1;
+        day = date.getDate();
+        document.getElementById("data").innerHTML = day + "/" + month + "/" + year;
+    </script>
+
+    <form action="./consumir.php" method="post">
+        <input type="radio" name="consumo" value="250" />Copo de 250ml<br />
+        <input type="radio" name="consumo" value="350" /> Copo de 350ml<br />
+        <input type="radio" name="consumo" value="500" /> Garrafa de 500ml<br />
+
+        <button type="submit">Consumir</button>
+    </form>
+    <hr>
+    <div>
+        <p>Meta do dia: <span id="meta_do_dia"></span></p>
+        <p>Meta restante: <span id="meta_restante"></span></p>
+        <p>Meta já consumida: <span id="meta_consumida"></span></p>
+        <p>Meta já consumida(%): <span id="meta_porcento"></span>%</p>
+    </div>
+
+    <p>Chegou na meta hoje? <span id="meta_concluida"></span></p>
+
+
+</body>
+
+</html>

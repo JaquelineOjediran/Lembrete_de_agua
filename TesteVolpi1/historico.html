@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico</title>
+</head>
+<script>
+    fetch('./usuario.php').then(response => {
+        return response.json();
+    }).then(usuario => {
+        document.getElementById('nome').innerText = usuario.nome_usuario;
+        fetch('./historico-dias.php').then(response => {
+            return response.json();
+        }).then(dias => {
+            for (const dia of dias) {
+                const conteudo_html = `
+                <div>
+                    <p>Data: ${dia.data_dia}</p>
+                    <p>Meta: ${usuario.meta_usuario}</p>
+                    <p>Quanto tomou: ${dia.consumido_dia}</p>
+                    <p>Chegou na meta? ${Number(dia.consumido_dia) >= Number(usuario.meta_usuario) ? "SIM" : "NÃO"}</p>
+                </div>
+                <hr />
+
+            `;
+            const elemento = document.createElement('div');
+            elemento.innerHTML = conteudo_html;
+            document.body.appendChild(elemento);
+            }
+        });
+    });
+
+</script>
+
+<body>
+    <h1>Histórico de <span id="nome"></span></h1>
+
+
+</body>
+
+</html>
